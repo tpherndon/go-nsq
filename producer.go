@@ -145,6 +145,9 @@ func (w *Producer) Stop() {
 		return
 	}
 	w.log(LogLevelInfo, "stopping")
+	if err := w.conn.WriteCommand(StartClose()); err != nil {
+		w.log(LogLevelError, "(%s) error sending CLS - %s", w.conn.String(), err)
+	}
 	close(w.exitChan)
 	w.close()
 	w.guard.Unlock()
